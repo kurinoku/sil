@@ -10,7 +10,12 @@ function class:init(x, y)
   return self
 end
 
-function class:__tostring()
+
+function class.__mt:__call() -- superfluous example, this metamethod will affects instances
+  print(self:tostring())
+end
+
+function class:tostring()
   return '<' .. self.class.name .. ' x = ' .. tostring(self.x) .. ', y = ' .. tostring(self.y) .. '>'
 end
 

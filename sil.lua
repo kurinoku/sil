@@ -1,7 +1,7 @@
 -- Simple Inheritance for Lua
 
 local M = {
-	_VERSION     = 'sil v1.0',
+	_VERSION     = 'sil v1.2',
 	_URL         = 'https://github.com/kurinoku/sil',
 	_DESCRIPTION = 'Simple Inheritance for Lua', 
 	_LICENSE     = [[
@@ -30,6 +30,20 @@ local M = {
 }
 
 
+local function constructor(self, ...)
+	return self:new():init(...)
+end
+
+local function default_new(self)
+	local o = {class = self, isClass = false, name = nil}
+	setmetatable(o, self.__mt)
+	return o
+end
+
+local function default_init(self)
+	return self
+end
+
 function M.newClass(super, name)
 	local class
 
@@ -40,19 +54,22 @@ function M.newClass(super, name)
 	end
 	class.isClass = true
 	class.__super = super
-	class.__index = class
+	class.__index = super
+	setmetatable(class, class)
+
+	class.__mt = {__index = class}
+	setmetatable(class.__mt, class.__mt)
+
 	class.name = name or 'UnnamedClass'
 
 
-	function class:new()
-		local o = {class = self, isClass = false, name = nil}
-		setmetatable(o, self)
-		return o
-	end
+	class.new = default_new
 
-	function class:init()
-		return self
-	end
+	class.init = default_init
+
+	class.__call = constructor
+
+	class.__mt.__call = nil -- disallows calling to instances
 
 	return class, super
 end

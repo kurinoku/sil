@@ -1,5 +1,5 @@
 
-local sil = require '..sil'
+local sil = require 'sil'
 
 local class, super = sil.newClass(nil)
 

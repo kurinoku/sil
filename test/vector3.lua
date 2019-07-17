@@ -1,5 +1,5 @@
 local vector = require 'vector'
-local sil = require '../sil'
+local sil = require 'sil'
 
 local class, super = sil.newClass(vector)
 function class:init(x, y, z)

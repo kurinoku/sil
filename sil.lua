@@ -50,6 +50,7 @@ function M.newClass(super)
 	end
 
 	function class:init()
+		return self
 	end
 
 	return class, super

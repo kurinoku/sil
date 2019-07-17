@@ -9,7 +9,7 @@ function class:init(x, y, z)
   return self
 end
 
-function class:tostring()
+function class.__mt:__tostring()
   return '<' .. self.class.name .. ' x = ' .. tostring(self.x) .. ', y = ' .. tostring(self.y) .. ', z = ' .. tostring(self.z) .. '>'
 end
 

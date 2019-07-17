@@ -1,7 +1,7 @@
 -- Simple Inheritance for Lua
 
 local M = {
-	_VERSION     = 'sil v1.2',
+	_VERSION     = 'sil v1.3',
 	_URL         = 'https://github.com/kurinoku/sil',
 	_DESCRIPTION = 'Simple Inheritance for Lua', 
 	_LICENSE     = [[
@@ -29,7 +29,9 @@ local M = {
 ]]
 }
 
+local insert = table.insert
 
+-- default constructor using lua's real multiple arguments
 local function constructor(self, ...)
 	return self:new():init(...)
 end
@@ -44,6 +46,23 @@ local function default_init(self)
 	return self
 end
 
+local function mirror_table(origin, dest)
+	for k, v in pairs(origin) do 
+		if rawget(dest, k) == nil then
+			rawset(dest, k, rawget(origin, k))
+		end
+	end
+end
+
+local function propagate_newindex(self, key, value)
+	for i = 1, #self.__children_mt do
+		self.__children_mt[i][key] = value
+	end
+	rawset(self, key, value)
+end
+
+local mt_for_mt = {__newindex = propagate_newindex, __metatable = nil}
+
 function M.newClass(super, name)
 	local class
 
@@ -57,19 +76,17 @@ function M.newClass(super, name)
 	class.__index = super
 	setmetatable(class, class)
 
-	class.__mt = {__index = class}
-	setmetatable(class.__mt, class.__mt)
+	class.__mt = {__index = class, __children_mt = {}}
+	if super ~= nil then
+		mirror_table(super.__mt, class.__mt)
+		insert(super.__mt.__children_mt, class.__mt)
+	end
+	setmetatable(class.__mt, mt_for_mt)
 
 	class.name = name or 'UnnamedClass'
-
-
 	class.new = default_new
-
 	class.init = default_init
-
 	class.__call = constructor
-
-	class.__mt.__call = nil -- disallows calling to instances
 
 	return class, super
 end
@@ -83,17 +100,16 @@ function M.isInstance(obj, cls)
 		return false 
 	end
 
+	if not obj.isClass then
+		obj = obj.class
+	end
 
-  if not obj.isClass then
-    obj = obj.class
-  end
-
-  while istable(obj) do
-    if obj == cls then return true end
-    obj = obj.__super
-  end
+	while istable(obj) do
+		if obj == cls then return true end
+		obj = obj.__super
+	end
   
-  return false
+  	return false
 end
 
 

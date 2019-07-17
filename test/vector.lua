@@ -11,11 +11,11 @@ function class:init(x, y)
 end
 
 
-function class.__mt:__call() -- superfluous example, this metamethod will affects instances
-  print(self:tostring())
+function class.__mt:__call() -- superfluous example, this metamethod will affect instances
+  print(self)
 end
 
-function class:tostring()
+function class.__mt:__tostring()
   return '<' .. self.class.name .. ' x = ' .. tostring(self.x) .. ', y = ' .. tostring(self.y) .. '>'
 end
 

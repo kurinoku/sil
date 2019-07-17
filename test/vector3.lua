@@ -1,7 +1,7 @@
 local vector = require 'vector'
 local sil = require 'sil'
 
-local class, super = sil.newClass(vector)
+local class, super = sil.newClass(vector, 'Vector3')
 function class:init(x, y, z)
   super.init(self, x, y)
   self.z = z
@@ -10,7 +10,7 @@ function class:init(x, y, z)
 end
 
 function class:__tostring()
-  return '<vector x = ' .. tostring(self.x) .. ', y = ' .. tostring(self.y) .. ', z = ' .. tostring(self.z) .. '>'
+  return '<' .. self.class.name .. ' x = ' .. tostring(self.x) .. ', y = ' .. tostring(self.y) .. ', z = ' .. tostring(self.z) .. '>'
 end
 
 return class

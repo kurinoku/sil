@@ -1,7 +1,7 @@
 
 local sil = require 'sil'
 
-local class, super = sil.newClass(nil)
+local class, super = sil.newClass(nil, 'Vector')
 
 function class:init(x, y)
   self.x = x
@@ -11,7 +11,7 @@ function class:init(x, y)
 end
 
 function class:__tostring()
-  return '<vector x = ' .. tostring(self.x) .. ', y = ' .. tostring(self.y) .. '>'
+  return '<' .. self.class.name .. ' x = ' .. tostring(self.x) .. ', y = ' .. tostring(self.y) .. '>'
 end
 
 return class

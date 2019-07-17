@@ -30,7 +30,7 @@ local M = {
 }
 
 
-function M.newClass(super)
+function M.newClass(super, name)
 	local class
 
 	if super ~= nil then
@@ -41,10 +41,11 @@ function M.newClass(super)
 	class.isClass = true
 	class.__super = super
 	class.__index = class
+	class.name = name or 'UnnamedClass'
 
 
 	function class:new()
-		local o = {isClass = false}
+		local o = {class = self, isClass = false, name = nil}
 		setmetatable(o, self)
 		return o
 	end
@@ -67,13 +68,14 @@ function M.isInstance(obj, cls)
 
 
   if not obj.isClass then
-    obj = getmetatable(obj)
+    obj = obj.class
   end
 
   while istable(obj) do
     if obj == cls then return true end
     obj = obj.__super
-	end
+  end
+  
   return false
 end
 

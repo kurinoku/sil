@@ -12,7 +12,7 @@ end
 
 
 function class.__mt:__call() -- superfluous example, this metamethod will affect instances
-  print(self)
+  print('called the instance:', self)
 end
 
 function class.__mt:__tostring()

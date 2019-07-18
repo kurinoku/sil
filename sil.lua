@@ -1,7 +1,7 @@
 -- Simple Inheritance for Lua
 
 local M = {
-	_VERSION     = 'sil v1.3',
+	_VERSION     = 'sil v1.3.1',
 	_URL         = 'https://github.com/kurinoku/sil',
 	_DESCRIPTION = 'Simple Inheritance for Lua', 
 	_LICENSE     = [[
@@ -55,8 +55,13 @@ local function mirror_table(origin, dest)
 end
 
 local function propagate_newindex(self, key, value)
-	for i = 1, #self.__children_mt do
-		self.__children_mt[i][key] = value
+	local current_value = rawget(self, key)
+	if self.propagate == true then
+		for i = 1, #self.__children_mt do
+			if self.__children_mt[i][key] == current_value then
+				self.__children_mt[i][key] = value
+			end
+		end
 	end
 	rawset(self, key, value)
 end
@@ -76,9 +81,10 @@ function M.newClass(super, name)
 	class.__index = super
 	setmetatable(class, class)
 
-	class.__mt = {__index = class, __children_mt = {}}
+	class.__mt = {__index = class, __children_mt = {}, propagate = true}
 	if super ~= nil then
 		mirror_table(super.__mt, class.__mt)
+		class.__mt.propagate = super.__mt.propagate
 		insert(super.__mt.__children_mt, class.__mt)
 	end
 	setmetatable(class.__mt, mt_for_mt)

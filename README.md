@@ -13,3 +13,7 @@ Check the [examples](/test/).
 Accepts a **sil**-created table (_**'obj'**_) and checks if inherits from the **sil**-created class (_**'cls'**_).
 
 To have metamethods affect instances define them for _**'class.__mt'**_. Any other defined for _**'class'**_ will only define them for the class itself.
+
+Any changes to a _**'class.__mt'**_ will affect the subclasses _**'.__mt'**_ as well, only if the subclasses value in that key are the same as the class value. For example:  
+if class.__mt.__add is changed subclass1.\_\_mt.__add will be changed only if it was the same as class.__mt.__add before changing it, the same goes for subclass2, subclass3, subclassN...
+This behaviour can be toggled by changing ___mt_'s **propagate**, by default is __true__.

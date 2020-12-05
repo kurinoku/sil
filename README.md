@@ -1,3 +1,5 @@
+# Note: I dont think this works lmao
+
 # sil
 ### Simple Inheritance for Lua
 
